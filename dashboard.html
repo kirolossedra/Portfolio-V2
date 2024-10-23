@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Skills Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        canvas {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>My Skills Dashboard</h1>
+    
+    <canvas id="skillsChart" width="400" height="200"></canvas>
+    <canvas id="languageUsageChart" width="400" height="200"></canvas>
+    <canvas id="workStudyDistributionChart" width="400" height="200"></canvas>
+
+    <script>
+        // Skills Chart
+        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+        const skillsChart = new Chart(ctxSkills, {
+            type: 'bar',
+            data: {
+                labels: ['JavaScript', 'Python', 'SQL', 'Data Visualization', 'Machine Learning'],
+                datasets: [{
+                    label: 'Skill Level (1-10)',
+                    data: [8, 7, 6, 5, 4],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Language Usage Chart
+        const ctxLanguages = document.getElementById('languageUsageChart').getContext('2d');
+        const languageUsageChart = new Chart(ctxLanguages, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024'],
+                datasets: [
+                    {
+                        label: 'C/C++',
+                        data: [10, 10, 8, 0, 0],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Python (General)',
+                        data: [0, 0, 5, 8, 8],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Python (TensorFlow & Keras)',
+                        data: [0, 0, 0, 0, 6],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'R',
+                        data: [0, 0, 0, 0, 4],
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        fill: false,
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Usage Level (1-10)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Work and Study Distribution Chart
+        const ctxDistribution = document.getElementById('workStudyDistributionChart').getContext('2d');
+        const workStudyDistributionChart = new Chart(ctxDistribution, {
+            type: 'pie',
+            data: {
+                labels: ['Software Engineering', 'Data Science', 'Data Engineering'],
+                datasets: [{
+                    label: 'Work and Study Distribution',
+                    data: [25, 30, 45],
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Work and Study Distribution'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
