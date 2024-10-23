@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Portfolio</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .model-container {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .model-container:hover {
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .model-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Dropdown Arrow & Headers */
+        .dropdown-header {
+            cursor: pointer;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-header:hover {
+            background-color: #e9e9e9;
+        }
+
+        /* Updated Arrow Styling */
+        .arrow {
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #666;
+            border-bottom: 2px solid #666;
+            transform: rotate(-45deg);
+            transition: transform 0.3s ease;
+            position: relative;
+            top: -2px;
+        }
+
+        .arrow.down {
+            transform: rotate(45deg);
+            top: -4px;
+        }
+
+        /* Dropdown Content */
+        .dropdown-content {
+            display: none;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* File Upload Styling */
+        .file-upload input[type="file"] {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        /* Confusion Matrix Image */
+        .confusion-matrix img {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="model-container">
+        <div class="model-title">Model 1</div>
+        
+        <!-- Evaluation Dropdown -->
+        <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown('evaluation1')">
+                <span>Evaluation</span>
+                <div class="arrow" id="evaluation1-arrow"></div>
+            </div>
+            <div class="dropdown-content" id="evaluation1">
+                <div class="confusion-matrix">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Confusion_matrix_diagram.png" alt="Confusion Matrix Example">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Try it out Dropdown -->
+        <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown('tryout1')">
+                <span>Try it out</span>
+                <div class="arrow" id="tryout1-arrow"></div>
+            </div>
+            <div class="dropdown-content" id="tryout1">
+                <div class="file-upload">
+                    <label for="file-upload1">Upload a file:</label>
+                    <input type="file" id="file-upload1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="model-container">
+        <div class="model-title">Model 2</div>
+        
+        <!-- Evaluation Dropdown -->
+        <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown('evaluation2')">
+                <span>Evaluation</span>
+                <div class="arrow" id="evaluation2-arrow"></div>
+            </div>
+            <div class="dropdown-content" id="evaluation2">
+                <div class="confusion-matrix">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Confusion_matrix_diagram.png" alt="Confusion Matrix Example">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Try it out Dropdown -->
+        <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown('tryout2')">
+                <span>Try it out</span>
+                <div class="arrow" id="tryout2-arrow"></div>
+            </div>
+            <div class="dropdown-content" id="tryout2">
+                <div class="file-upload">
+                    <label for="file-upload2">Upload a file:</label>
+                    <input type="file" id="file-upload2">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle dropdowns and change arrow direction
+        function toggleDropdown(id) {
+            const content = document.getElementById(id);
+            const arrow = document.getElementById(`${id}-arrow`);
+
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.classList.remove("down");
+            } else {
+                content.style.display = "block";
+                arrow.classList.add("down");
+            }
+        }
+    </script>
+
+</body>
+</html>
