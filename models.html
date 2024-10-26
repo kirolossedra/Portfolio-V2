@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Model Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
     <style>
-        /* Basic Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f9f9f9;
@@ -34,7 +34,6 @@
             margin-bottom: 15px;
         }
 
-        /* Dropdown Arrow & Headers */
         .dropdown-header {
             cursor: pointer;
             background-color: #f5f5f5;
@@ -50,7 +49,6 @@
             background-color: #e9e9e9;
         }
 
-        /* Updated Arrow Styling */
         .arrow {
             width: 8px;
             height: 8px;
@@ -67,7 +65,6 @@
             top: -4px;
         }
 
-        /* Dropdown Content */
         .dropdown-content {
             display: none;
             padding: 15px;
@@ -76,30 +73,83 @@
             margin-top: 10px;
         }
 
-        /* File Upload Styling */
-        .file-upload input[type="file"] {
-            display: block;
-            margin-top: 10px;
-            padding: 10px;
-            font-size: 1rem;
+        /* Digit Recognition Specific Styles */
+        .recognition-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
         }
 
-        /* Confusion Matrix Image */
-        .confusion-matrix img {
+        .input-section {
             width: 100%;
-            max-width: 400px;
-            margin-top: 10px;
-            border: 1px solid #e0e0e0;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
             border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        #drawingCanvas {
+            cursor: crosshair;
+        }
+
+        .canvas-controls {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .error { background-color: #ffebee; color: #c62828; }
+        .success { background-color: #e8f5e9; color: #2e7d32; }
+
+        #predictionResult, #confidenceDisplay {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .input-option {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-
     <div class="model-container">
-        <div class="model-title">Model 1</div>
+        <div class="model-title">Digit Recognition Model</div>
         
-        <!-- Evaluation Dropdown -->
         <div class="dropdown">
             <div class="dropdown-header" onclick="toggleDropdown('evaluation1')">
                 <span>Evaluation</span>
@@ -107,63 +157,77 @@
             </div>
             <div class="dropdown-content" id="evaluation1">
                 <div class="confusion-matrix">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Confusion_matrix_diagram.png" alt="Confusion Matrix Example">
+                    <img src="/api/placeholder/400/400" alt="Confusion Matrix">
                 </div>
             </div>
         </div>
         
-        <!-- Try it out Dropdown -->
         <div class="dropdown">
             <div class="dropdown-header" onclick="toggleDropdown('tryout1')">
                 <span>Try it out</span>
                 <div class="arrow" id="tryout1-arrow"></div>
             </div>
             <div class="dropdown-content" id="tryout1">
-                <div class="file-upload">
-                    <label for="file-upload1">Upload a file:</label>
-                    <input type="file" id="file-upload1">
-                </div>
-            </div>
-        </div>
-    </div>
+                <div class="recognition-container">
+                    <div id="statusMessage" class="status"></div>
+                    
+                    <div class="input-option">
+                        <h3>Option 1: Upload Image</h3>
+                        <input type="file" id="imageUploadInput" accept="image/*">
+                        <canvas id="previewCanvas" width="280" height="280"></canvas>
+                    </div>
 
-    <div class="model-container">
-        <div class="model-title">Model 2</div>
-        
-        <!-- Evaluation Dropdown -->
-        <div class="dropdown">
-            <div class="dropdown-header" onclick="toggleDropdown('evaluation2')">
-                <span>Evaluation</span>
-                <div class="arrow" id="evaluation2-arrow"></div>
-            </div>
-            <div class="dropdown-content" id="evaluation2">
-                <div class="confusion-matrix">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Confusion_matrix_diagram.png" alt="Confusion Matrix Example">
-                </div>
-            </div>
-        </div>
-        
-        <!-- Try it out Dropdown -->
-        <div class="dropdown">
-            <div class="dropdown-header" onclick="toggleDropdown('tryout2')">
-                <span>Try it out</span>
-                <div class="arrow" id="tryout2-arrow"></div>
-            </div>
-            <div class="dropdown-content" id="tryout2">
-                <div class="file-upload">
-                    <label for="file-upload2">Upload a file:</label>
-                    <input type="file" id="file-upload2">
+                    <div class="input-option">
+                        <h3>Option 2: Draw Digit</h3>
+                        <canvas id="drawingCanvas" width="280" height="280"></canvas>
+                        <div class="canvas-controls">
+                            <button id="clearCanvas">Clear Canvas</button>
+                            <button id="predictDrawing">Predict Drawing</button>
+                        </div>
+                    </div>
+
+                    <div id="predictionResult"></div>
+                    <div id="confidenceDisplay"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to toggle dropdowns and change arrow direction
+        let model;
+        const IMAGE_SIZE = 28;
+        const previewCanvas = document.getElementById('previewCanvas');
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const ctx = previewCanvas.getContext('2d');
+        const drawingCtx = drawingCanvas.getContext('2d');
+        const statusMessage = document.getElementById('statusMessage');
+        const predictionResult = document.getElementById('predictionResult');
+        const confidenceDisplay = document.getElementById('confidenceDisplay');
+
+        // Drawing setup
+        drawingCtx.strokeStyle = 'black';
+        drawingCtx.lineWidth = 20;
+        drawingCtx.lineCap = 'round';
+        drawingCtx.lineJoin = 'round';
+
+        // Drawing state
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Event listeners for drawing
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', stopDrawing);
+        document.getElementById('clearCanvas').addEventListener('click', clearDrawingCanvas);
+        document.getElementById('predictDrawing').addEventListener('click', predictDrawing);
+        document.getElementById('imageUploadInput').addEventListener('change', handleImageUpload);
+
         function toggleDropdown(id) {
             const content = document.getElementById(id);
             const arrow = document.getElementById(`${id}-arrow`);
-
+            
             if (content.style.display === "block") {
                 content.style.display = "none";
                 arrow.classList.remove("down");
@@ -172,7 +236,138 @@
                 arrow.classList.add("down");
             }
         }
-    </script>
 
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            drawingCtx.beginPath();
+            drawingCtx.moveTo(lastX, lastY);
+            drawingCtx.lineTo(e.offsetX, e.offsetY);
+            drawingCtx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearDrawingCanvas() {
+            drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            predictionResult.textContent = '';
+            confidenceDisplay.textContent = '';
+        }
+
+        async function loadModel() {
+            try {
+                setStatus('Loading model...', 'normal');
+                model = await tf.loadLayersModel('model.json');
+                setStatus('Model loaded successfully!', 'success');
+            } catch (error) {
+                setStatus('Error loading model: ' + error.message, 'error');
+            }
+        }
+
+        function setStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status ' + type;
+        }
+
+        async function preprocessImage(image) {
+            return tf.tidy(() => {
+                let tensor = tf.browser.fromPixels(image, 1);
+                if (tensor.shape[0] !== IMAGE_SIZE || tensor.shape[1] !== IMAGE_SIZE) {
+                    tensor = tf.image.resizeBilinear(tensor, [IMAGE_SIZE, IMAGE_SIZE]);
+                }
+                let normalized = tensor.toFloat().div(255.0);
+                const mean = normalized.mean().dataSync()[0];
+                if (mean > 0.5) {
+                    normalized = tf.scalar(1).sub(normalized);
+                }
+                normalized = normalized.sub(normalized.min())
+                    .div(normalized.max().sub(normalized.min()));
+                return normalized.expandDims(0);
+            });
+        }
+
+        async function predictDrawing() {
+            if (!model) {
+                setStatus('Please wait for the model to load', 'error');
+                return;
+            }
+
+            try {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = IMAGE_SIZE;
+                tempCanvas.height = IMAGE_SIZE;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.fillStyle = 'white';
+                tempCtx.fillRect(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+                tempCtx.drawImage(drawingCanvas, 0, 0, IMAGE_SIZE, IMAGE_SIZE);
+
+                const processedImage = await preprocessImage(tempCanvas);
+                const predictions = model.predict(processedImage);
+                const predictedArray = await predictions.data();
+                const predictedClass = predictions.argMax(-1).dataSync()[0];
+                const confidence = predictedArray[predictedClass] * 100;
+
+                predictionResult.textContent = `Predicted digit: ${predictedClass}`;
+                confidenceDisplay.textContent = `Confidence: ${confidence.toFixed(2)}%`;
+
+                processedImage.dispose();
+                predictions.dispose();
+            } catch (error) {
+                setStatus('Error processing drawing: ' + error.message, 'error');
+            }
+        }
+
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!model) {
+                setStatus('Please wait for the model to load', 'error');
+                return;
+            }
+
+            try {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+
+                img.onload = async () => {
+                    predictionResult.textContent = '';
+                    confidenceDisplay.textContent = '';
+
+                    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+                    const scale = Math.min(previewCanvas.width / img.width, previewCanvas.height / img.height);
+                    const x = (previewCanvas.width - img.width * scale) / 2;
+                    const y = (previewCanvas.height - img.height * scale) / 2;
+                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+                    const processedImage = await preprocessImage(img);
+                    const predictions = model.predict(processedImage);
+                    const predictedArray = await predictions.data();
+                    const predictedClass = predictions.argMax(-1).dataSync()[0];
+                    const confidence = predictedArray[predictedClass] * 100;
+
+                    predictionResult.textContent = `Predicted digit: ${predictedClass}`;
+                    confidenceDisplay.textContent = `Confidence: ${confidence.toFixed(2)}%`;
+
+                    processedImage.dispose();
+                    predictions.dispose();
+                };
+
+                img.onerror = () => {
+                    setStatus('Error loading image', 'error');
+                };
+            } catch (error) {
+                setStatus('Error processing image: ' + error.message, 'error');
+            }
+        }
+
+        window.onload = loadModel;
+    </script>
 </body>
 </html>
